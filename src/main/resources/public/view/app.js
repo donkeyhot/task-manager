@@ -1,48 +1,48 @@
 var app = angular.module('app', []);
 
-app.controller('UserCRUDCtrl', [
+app.controller('TaskCRUDCtrl', [
 		'$scope',
-		'UserCRUDService',
-		function($scope, UserCRUDService) {
+		'TaskCRUDService',
+		function($scope, TaskCRUDService) {
 
-			$scope.updateUser = function() {
-				UserCRUDService.updateUser($scope.user.id, $scope.user.name,
-						$scope.user.email).then(function success(response) {
-					$scope.message = 'User data updated!';
+			$scope.updateTask = function() {
+				TaskCRUDService.updateTask($scope.task.id, $scope.task.name,
+						$scope.task.description).then(function success(response) {
+					$scope.message = 'Task data updated!';
 					$scope.errorMessage = '';
 				}, function error(response) {
-					$scope.errorMessage = 'Error updating user!';
+					$scope.errorMessage = 'Error updating task!';
 					$scope.message = '';
 				});
 			}
 
-			$scope.getUser = function() {
-				var id = $scope.user.id;
-				UserCRUDService.getUser($scope.user.id).then(
+			$scope.getTask = function() {
+				var id = $scope.task.id;
+				TaskCRUDService.getTask($scope.task.id).then(
 						function success(response) {
-							$scope.user = response.data;
-							$scope.user.id = id;
+							$scope.task = response.data;
+							$scope.task.id = id;
 							$scope.message = '';
 							$scope.errorMessage = '';
 						}, function error(response) {
 							$scope.message = '';
 							if (response.status === 404) {
-								$scope.errorMessage = 'User not found!';
+								$scope.errorMessage = 'Task not found!';
 							} else {
-								$scope.errorMessage = "Error getting user!";
+								$scope.errorMessage = "Error getting task!";
 							}
 						});
 			}
 
-			$scope.addUser = function() {
-				if ($scope.user != null && $scope.user.name) {
-					UserCRUDService
-							.addUser($scope.user.name, $scope.user.email)
+			$scope.addTask = function() {
+				if ($scope.task != null && $scope.task.name) {
+					TaskCRUDService
+							.addTask($scope.task.name, $scope.task.description)
 							.then(function success(response) {
-								$scope.message = 'User added!';
+								$scope.message = 'Task added!';
 								$scope.errorMessage = '';
 							}, function error(response) {
-								$scope.errorMessage = 'Error adding user!';
+								$scope.errorMessage = 'Error adding task!';
 								$scope.message = '';
 							});
 				} else {
@@ -51,70 +51,70 @@ app.controller('UserCRUDCtrl', [
 				}
 			}
 
-			$scope.deleteUser = function() {
-				UserCRUDService.deleteUser($scope.user.id).then(
+			$scope.deleteTask = function() {
+				TaskCRUDService.deleteTask($scope.task.id).then(
 						function success(response) {
-							$scope.message = 'User deleted!';
-							$scope.user = null;
+							$scope.message = 'Task deleted!';
+							$scope.task = null;
 							$scope.errorMessage = '';
 						}, function error(response) {
-							$scope.errorMessage = 'Error deleting user!';
+							$scope.errorMessage = 'Error deleting task!';
 							$scope.message = '';
 						})
 			}
 
-			$scope.getAllUsers = function() {
-				UserCRUDService.getAllUsers().then(function success(response) {
-					$scope.users = response.data._embedded.tasks;
+			$scope.getAllTasks = function() {
+				TaskCRUDService.getAllTasks().then(function success(response) {
+					$scope.tasks = response.data._embedded.tasks;
 					$scope.message = '';
 					$scope.errorMessage = '';
 				}, function error(response) {
 					$scope.message = '';
-					$scope.errorMessage = 'Error getting users!';
+					$scope.errorMessage = 'Error getting tasks!';
 				});
 			}
 
 		} ]);
 
-app.service('UserCRUDService', [ '$http', function($http) {
+app.service('TaskCRUDService', [ '$http', function($http) {
 
-	this.getUser = function getUser(userId) {
+	this.getTask = function getTask(taskId) {
 		return $http({
 			method : 'GET',
-			url : 'tasks/' + userId
+			url : 'tasks/' + taskId
 		});
 	}
 
-	this.addUser = function addUser(name, email) {
+	this.addTask = function addTask(name, description) {
 		return $http({
 			method : 'POST',
 			url : 'tasks',
 			data : {
 				name : name,
-				email : email
+				description : description
 			}
 		});
 	}
 
-	this.deleteUser = function deleteUser(id) {
+	this.deleteTask = function deleteTask(id) {
 		return $http({
 			method : 'DELETE',
 			url : 'tasks/' + id
 		})
 	}
 
-	this.updateUser = function updateUser(id, name, email) {
+	this.updateTask = function updateTask(id, name, description) {
 		return $http({
 			method : 'PATCH',
 			url : 'tasks/' + id,
 			data : {
 				name : name,
-				email : email
+				description : description
 			}
 		})
 	}
 
-	this.getAllUsers = function getAllUsers() {
+	this.getAllTasks = function getAllTasks() {
 		return $http({
 			method : 'GET',
 			url : 'tasks'
