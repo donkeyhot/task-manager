@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 @Entity
 @Table(indexes = { @Index(name = "IDX1_COMPLETED", columnList = "COMPLETED") })
 public class Task implements Serializable {
@@ -22,6 +25,7 @@ public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(access = Access.READ_ONLY)
     private Long id;
 
     public Long getId() {
@@ -55,7 +59,8 @@ public class Task implements Serializable {
     }
 
     @Basic
-    private Instant created = Instant.now();
+    @JsonProperty(access = Access.READ_ONLY)
+    private Instant created;
 
     public Instant getCreated() {
 	return created;
@@ -67,6 +72,7 @@ public class Task implements Serializable {
 
     @Basic
     @Column(name = "COMPLETED")
+    @JsonProperty(access = Access.READ_ONLY)
     private Instant completed;
 
     public Instant getCompleted() {
@@ -77,30 +83,13 @@ public class Task implements Serializable {
 	this.completed = completed;
     }
 
-    public void markComplete() {
-	this.completed = Instant.now();
-    }
-
-    public void markUncomplete() {
-	this.completed = null;
-    }
-
-    // UTILITY
-
-    public enum TaskStatus {
-	PENDING, DONE;
-    }
-
-    public TaskStatus getStatus() {
-	return completed != null
-		? TaskStatus.DONE
-		: TaskStatus.PENDING;
+    public boolean isPending() {
+	return completed == null;
     }
 
     // CONSTRUCTORS
 
-    @Deprecated // for JPA needs
-    protected Task() {
+    public Task() {
     }
 
     // hC/eq/toSt

@@ -49,9 +49,11 @@ public class TaskServiceImpl implements TaskService {
     public Task create(Task task) {
 	Objects.requireNonNull(task);
 
-	if (task.getId() != null && repository.existsById(task.getId()))
-	    throw new IllegalArgumentException("Task exists with given id");
-	return repository.save(task);
+	final Task origin = new Task();
+	origin.setName(task.getName());
+	origin.setDescription(task.getDescription());
+	origin.setCreated(Instant.now());
+	return repository.save(origin);
     }
 
     @Override
@@ -60,35 +62,34 @@ public class TaskServiceImpl implements TaskService {
 	Objects.requireNonNull(taskId);
 	Objects.requireNonNull(task);
 
-	if (task.getId() != null && !taskId.equals(task.getId()))
-	    throw new IllegalArgumentException("IDs doesn't match");
+	final Task origin = getAndCheckFromRepo(taskId); // checks that already
+							 // exists
+	origin.setName(task.getName());
+	origin.setDescription(task.getDescription());
 
-	getAndCheckFromRepo(taskId); // checks that already exists
-
-	task.setId(taskId);
-	return repository.save(task);
+	return repository.save(origin);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Task complete(Long taskId) throws IllegalStateException {
 	Objects.requireNonNull(taskId);
-	final Task t = getAndCheckFromRepo(taskId);
-	if (t.getCompleted() != null)
+	final Task origin = getAndCheckFromRepo(taskId);
+	if (origin.getCompleted() != null)
 	    throw new IllegalStateException("Already completed");
-	t.setCompleted(Instant.now());
-	return repository.save(t);
+	origin.setCompleted(Instant.now());
+	return repository.save(origin);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Task uncomplete(Long taskId) {
 	Objects.requireNonNull(taskId);
-	final Task t = getAndCheckFromRepo(taskId);
-	if (t.getCompleted() == null)
+	final Task origin = getAndCheckFromRepo(taskId);
+	if (origin.getCompleted() == null)
 	    throw new IllegalStateException("Not completed yet");
-	t.setCompleted(null);
-	return repository.save(t);
+	origin.setCompleted(null);
+	return repository.save(origin);
     }
 
     @Override
@@ -96,8 +97,8 @@ public class TaskServiceImpl implements TaskService {
     public void delete(Long taskId) {
 	Objects.requireNonNull(taskId);
 
-	final Task org = getAndCheckFromRepo(taskId);
-	repository.delete(org);
+	final Task origin = getAndCheckFromRepo(taskId);
+	repository.delete(origin);
     }
 
     // PRIVATE

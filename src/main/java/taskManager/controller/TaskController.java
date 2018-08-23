@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,10 +35,10 @@ public class TaskController {
     }
 
     /**
-     * Put to /tasks/{taskId} endpoint updates, saves and returns task with
+     * Patch to /tasks/{taskId} endpoint updates, saves and returns task with
      * id=taskId.
      */
-    @PutMapping("/{taskId}")
+    @PatchMapping("/{taskId}")
     public ResponseEntity<?> update(@PathVariable(value = "taskId") Long taskId,
 	    @RequestBody @NotNull Task task) {
 	try {
@@ -53,7 +53,7 @@ public class TaskController {
      * Post to /tasks/{taskId}/uncomplete endpoint marks task with id=taskId as
      * completed. If already completed returns 409 ("conflict")
      */
-    @PutMapping("/{taskId}/complete")
+    @PatchMapping("/{taskId}/complete")
     public ResponseEntity<?> taskComplete(@PathVariable(value = "taskId") Long taskId) {
 	try {
 	    final Task result = taskService.complete(taskId);
@@ -67,7 +67,7 @@ public class TaskController {
      * Post to /tasks/{taskId}/uncomplete endpoint marks task with id=taskId as
      * uncompleted. If not completed yet returns 409 ("conflict")
      */
-    @PutMapping("/{taskId}/uncomplete")
+    @PatchMapping("/{taskId}/uncomplete")
     public ResponseEntity<?> taskUncomplete(@PathVariable(value = "taskId") Long taskId) {
 	try {
 	    final Task result = taskService.uncomplete(taskId);
