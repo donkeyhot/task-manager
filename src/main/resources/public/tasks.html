@@ -1,68 +1,70 @@
 <!DOCTYPE html>
 <html ng-app="app">
 <head>
-<title>Tasks</title>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-<script src="view/app.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<title>Tasks manager</title>
 <style>
+#mytable input {
+	width: 100%;
+}
+
 A {
 	cursor: pointer;
 	background-color: lightblue;
 }
+
+.taskCompleted {
+	text-decoration: line-through;
+}
 </style>
 </head>
-<body>
-	<div ng-controller="TaskCRUDCtrl" ng-init="getAllTasks()">
+<body ng-controller="TaskCRUDCtrl" ng-init="refreshAll()">
 
-		<table>
-			<tr>
-				<td width="100">ID:</td>
-				<td><input type="text" id="id" ng-model="task.id" /></td>
-			</tr>
-			<tr>
-				<td width="100">Name:</td>
-				<td><input type="text" id="name" ng-model="task.name" /></td>
-			</tr>
-			<tr>
-				<td width="100">Description:</td>
-				<td><input type="text" id="description" ng-model="task.description" /></td>
-			</tr>
-		</table>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="table-responsive">
 
-		<br />
-		<br />
-		<a ng-click="getTask(task.id)">Get Task</a>
-		<a ng-click="updateTask(task.id,task.name,task.description)">Update Task</a>
-		<a ng-click="addTask(task.name,task.description)">Add Task</a>
-		<a ng-click="deleteTask(task.id)">Delete Task</a>
-		<br />
-		<br />
-		<p style="color: green">{{message}}</p>
-		<p style="color: red">{{errorMessage}}</p>
-		<br />
-		<br />
-		<a ng-click="getAllTasks()">Get all Tasks</a>
-		<br />
-		<br />
-		<br />
-		<table>
-			<thead>
-				<tr>
-					<td>Name:</td>
-					<td>Description:</td>
-					<td>Created:</td>
-					<td>Completed:</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="task in tasks">
-					<td>{{task.name}}</td>
-					<td>{{task.description}}</td>
-					<td>{{task.created}}</td>
-					<td>{{task.completed}}</td>
-				</tr>
-			</tbody>
-		</table>
+					<button type="button" class="btn btn-info " ng-click="startAddTask()">Add Task</button>
+
+					<table id="mytable" class="table table-bordered">
+						<thead>
+							<tr>
+								<td>No:</td>
+								<td>Name:</td>
+								<td>Description:</td>
+								<td>Created:</td>
+								<td>Completed:</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="task in allTasks">
+								<td>{{$index+1}}</td>
+								<!-- 								<td><input name="taskId{{$index}}" ng-model="task.id" ng-disabled="true" /></td> -->
+								<td><input name="name{{$index}}" ng-model="task.name" ng-disabled="task.editing == null && !task.editing" /></td>
+								<td><input name="description{{$index}}" ng-model="task.description" ng-disabled="task.editing == null && !task.editing" /></td>
+								<td>{{task.created}}</td>
+								<td>{{task.completed}}</td>
+								<td>
+									<div class="buttons">
+										<button class="btn btn-primary" ng-click="startEditTask(task)">Edit</button>
+										<button class="btn btn-danger" ng-click="deleteTask(task)">Delete</button>
+										<button class="btn btn-success" ng-click="completeTask(task)" ng-if="task.pending">Mark complete</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<button class="btn btn-primary" ng-click="submitEditing()">Submit</button>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
 	</div>
+
 </body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+<script type="text/javascript" src="view/app.js"></script>
 </html>
