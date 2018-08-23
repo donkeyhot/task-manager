@@ -1,4 +1,4 @@
-package hello;
+package taskManager;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class HelloControllerIT {
+public class ApplicationIT {
 
     @LocalServerPort
     private int port;
