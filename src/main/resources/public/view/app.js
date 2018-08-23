@@ -10,6 +10,7 @@ app.controller('TaskCRUDCtrl', [
 						$scope.task.description).then(function success(response) {
 					$scope.message = 'Task data updated!';
 					$scope.errorMessage = '';
+					$scope.getAllTasks();
 				}, function error(response) {
 					$scope.errorMessage = 'Error updating task!';
 					$scope.message = '';
@@ -41,6 +42,7 @@ app.controller('TaskCRUDCtrl', [
 							.then(function success(response) {
 								$scope.message = 'Task added!';
 								$scope.errorMessage = '';
+								$scope.getAllTasks();
 							}, function error(response) {
 								$scope.errorMessage = 'Error adding task!';
 								$scope.message = '';
@@ -57,6 +59,7 @@ app.controller('TaskCRUDCtrl', [
 							$scope.message = 'Task deleted!';
 							$scope.task = null;
 							$scope.errorMessage = '';
+							$scope.getAllTasks();
 						}, function error(response) {
 							$scope.errorMessage = 'Error deleting task!';
 							$scope.message = '';
