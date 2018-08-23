@@ -19,7 +19,7 @@ A {
 }
 </style>
 </head>
-<body ng-controller="TaskCRUDCtrl" ng-init="refreshAll()">
+<body ng-controller="TaskController" ng-init="refreshAll()">
 
 	<div class="container">
 
@@ -36,16 +36,37 @@ A {
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="task in allTasks">
+				<tr>
+					<th colspan="6">Pending</th>
+				</tr>
+				<tr ng-repeat="task in pendingTasks">
 					<td>{{$index+1}}</td>
 					<td><input name="name{{$index}}" ng-model="task.name" ng-disabled="task.editing == null && !task.editing" /></td>
 					<td><input name="description{{$index}}" ng-model="task.description" ng-disabled="task.editing == null && !task.editing" /></td>
 					<td>{{task.created | date:'medium' }}</td>
 					<td>{{task.completed | date:'medium' }}
-						<button class="btn btn-success" ng-click="completeTask(task)" ng-if="task.pending">
+						<button class="btn btn-primary" ng-click="completeTask(task)" ng-if="task.pending">
 							<i class="material-icons">check_circle</i>
 						</button>
 					</td>
+					<td nowrap="nowrap">
+						<button class="btn btn-primary" ng-if="!task.editing" ng-click="startEditTask(task)">
+							<i class="material-icons">edit</i>
+						</button>
+						<button class="btn btn-danger" ng-click="deleteTask(task)">
+							<i class="material-icons">remove_circle</i>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<th colspan="6">Completed</th>
+				</tr>
+				<tr ng-repeat="task in completedTasks"  style="text-decoration: line-through;">
+					<td>{{$index+1}}</td>
+					<td><input style="text-decoration: line-through;" name="name{{$index}}" ng-model="task.name" ng-disabled="task.editing == null && !task.editing" /></td>
+					<td><input style="text-decoration: line-through;" name="description{{$index}}" ng-model="task.description" ng-disabled="task.editing == null && !task.editing" /></td>
+					<td>{{task.created | date:'medium' }}</td>
+					<td>{{task.completed | date:'medium' }}</td>
 					<td nowrap="nowrap">
 						<button class="btn btn-primary" ng-if="!task.editing" ng-click="startEditTask(task)">
 							<i class="material-icons">edit</i>

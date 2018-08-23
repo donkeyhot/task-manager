@@ -1,8 +1,8 @@
 var app = angular.module('app', []);
 
-app.controller('TaskCRUDCtrl', [
+app.controller('TaskController', [
 		'$scope',
-		'TaskCRUDService',
+		'TaskService',
 		function($scope, TaskCRUDService) {
 
 			$scope.startAddTask = function() {
@@ -12,7 +12,7 @@ app.controller('TaskCRUDCtrl', [
 					description : "",
 					editing : true
 				};
-				$scope.allTasks.push(task);
+				$scope.pendingTasks.push(task);
 			}
 
 			$scope.startEditTask = function(task) {
@@ -41,10 +41,11 @@ app.controller('TaskCRUDCtrl', [
 			}
 
 			$scope.submitEditing = function() {
-				for (i in $scope.allTasks) {
-					var task = $scope.allTasks[i];
+				var all = $scope.pendingTasks.concat($scope.completedTasks);
+				for (i in all) {
+					var task = all[i];
 					if (task.editing) {
-						if (task.id != null){
+						if (task.id != null) {
 							console.log("Updating " + angular.toJson(task));
 							TaskCRUDService.updateTask(task.id, task.name, task.description,
 									task.created, task.completed).then(
@@ -70,9 +71,14 @@ app.controller('TaskCRUDCtrl', [
 			}
 
 			$scope.refreshAll = function() {
-				TaskCRUDService.getAllTasks().then(function success(response) {
-					$scope.allTasks = response.data;
-					$scope.enabledEdit = [];
+				TaskCRUDService.getCompletedTasks().then(function success(response) {
+					$scope.completedTasks = response.data;
+					$scope.errorMessage = '';
+				}, function error(response) {
+					$scope.errorMessage = 'Error getting tasks!';
+				});
+				TaskCRUDService.getPendingTasks().then(function success(response) {
+					$scope.pendingTasks = response.data;
 					$scope.errorMessage = '';
 				}, function error(response) {
 					$scope.errorMessage = 'Error getting tasks!';
@@ -81,18 +87,18 @@ app.controller('TaskCRUDCtrl', [
 
 		} ]);
 
-app.service('TaskCRUDService', [
+app.service('TaskService', [
 		'$http',
 		function($http) {
 
-			this.getTask = function getTask(taskId) {
+			this.getTask = function(taskId) {
 				return $http({
 					method : 'GET',
 					url : 'tasks/' + taskId
 				});
 			}
 
-			this.createTask = function addTask(name, description) {
+			this.createTask = function(name, description) {
 				return $http({
 					method : 'POST',
 					url : 'tasks',
@@ -103,14 +109,14 @@ app.service('TaskCRUDService', [
 				});
 			}
 
-			this.deleteTask = function deleteTask(id) {
+			this.deleteTask = function(id) {
 				return $http({
 					method : 'DELETE',
 					url : 'tasks/' + id
 				})
 			}
 
-			this.updateTask = function updateTask(id, name, description, created,
+			this.updateTask = function(id, name, description, created,
 					completed) {
 				return $http({
 					method : 'PATCH',
@@ -122,24 +128,31 @@ app.service('TaskCRUDService', [
 				})
 			}
 
-			this.getAllTasks = function getAllTasks() {
+			this.getAllTasks = function() {
 				return $http({
 					method : 'GET',
 					url : 'tasks'
 				});
 			}
 
-			this.completeTask = function completeTask(id) {
+			this.completeTask = function(id) {
 				return $http({
 					method : 'PATCH',
 					url : 'tasks/' + id + '/complete'
 				});
 			}
 
-			this.getPendingTasks = function getPendingTasks() {
+			this.getPendingTasks = function() {
 				return $http({
 					method : 'GET',
 					url : 'tasks/pending'
+				});
+			}
+
+			this.getCompletedTasks = function() {
+				return $http({
+					method : 'GET',
+					url : 'tasks/completed'
 				});
 			}
 
