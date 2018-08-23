@@ -28,4 +28,4 @@ or
 java -jar build/libs/task-manager-0.1-SNAPSHOT.jar
 ```
 
-When app started just open http://localhost:8080/index.html with your web-browser.
+When app will started just open http://localhost:8080/index.html with your web-browser.
