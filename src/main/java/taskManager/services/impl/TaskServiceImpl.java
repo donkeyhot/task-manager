@@ -49,11 +49,9 @@ public class TaskServiceImpl implements TaskService {
     public Task create(Task task) {
 	Objects.requireNonNull(task);
 
-	final Task origin = new Task();
-	origin.setName(task.getName());
-	origin.setDescription(task.getDescription());
-	origin.setCreated(Instant.now());
-	return repository.save(origin);
+	task.setId(null);
+	task.setCreated(Instant.now());
+	return repository.save(task);
     }
 
     @Override
@@ -62,12 +60,12 @@ public class TaskServiceImpl implements TaskService {
 	Objects.requireNonNull(taskId);
 	Objects.requireNonNull(task);
 
-	final Task origin = getAndCheckFromRepo(taskId); // checks that already
-							 // exists
-	origin.setName(task.getName());
-	origin.setDescription(task.getDescription());
+	final Task origin = getAndCheckFromRepo(taskId);
+	task.setId(origin.getId());
+	task.setCreated(origin.getCreated());
+	task.setCompleted(origin.getCompleted());
 
-	return repository.save(origin);
+	return repository.save(task);
     }
 
     @Override

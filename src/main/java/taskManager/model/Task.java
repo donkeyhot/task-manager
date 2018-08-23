@@ -12,9 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-
 @Entity
 @Table(indexes = { @Index(name = "IDX1_COMPLETED", columnList = "COMPLETED") })
 public class Task implements Serializable {
@@ -25,7 +22,6 @@ public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = Access.READ_ONLY)
     private Long id;
 
     public Long getId() {
@@ -59,7 +55,6 @@ public class Task implements Serializable {
     }
 
     @Basic
-    @JsonProperty(access = Access.READ_ONLY)
     private Instant created;
 
     public Instant getCreated() {
@@ -72,7 +67,6 @@ public class Task implements Serializable {
 
     @Basic
     @Column(name = "COMPLETED")
-    @JsonProperty(access = Access.READ_ONLY)
     private Instant completed;
 
     public Instant getCompleted() {
@@ -168,5 +162,32 @@ public class Task implements Serializable {
 
     public static void main(String[] args) {
 	System.out.println(new Task());
+    }
+
+    public static Task of(String name) {
+	Task t = new Task();
+	t.setName(name);
+	return t;
+    }
+
+    public static Task of(Long id, String name) {
+	Task t = new Task();
+	t.setId(id);
+	t.setName(name);
+	return t;
+    }
+
+    public static Task copyOf(Long id, Task origin) {
+	final Task t = new Task();
+	t.setId(id);
+	t.setName(origin.name);
+	t.setDescription(origin.description);
+	t.setCreated(origin.created);
+	t.setCompleted(origin.completed);
+	return t;
+    }
+
+    public static Task copyOf(Task origin) {
+	return copyOf(origin.id, origin);
     }
 }

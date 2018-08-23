@@ -119,7 +119,7 @@ app.service('TaskService', [
 			this.updateTask = function(id, name, description, created,
 					completed) {
 				return $http({
-					method : 'PATCH',
+					method : 'PUT',
 					url : 'tasks/' + id,
 					data : {
 						name : name,
@@ -137,7 +137,7 @@ app.service('TaskService', [
 
 			this.completeTask = function(id) {
 				return $http({
-					method : 'PATCH',
+					method : 'PUT',
 					url : 'tasks/' + id + '/complete'
 				});
 			}
