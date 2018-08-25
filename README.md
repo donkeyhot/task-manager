@@ -11,7 +11,7 @@ Both packages are included in the project structure.
 or
 
 ```sh
-./mavenw package
+./mvnw package
 java -jar target/task-manager-0.1-SNAPSHOT.jar
 ```
 
