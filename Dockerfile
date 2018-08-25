@@ -1,5 +1,5 @@
 FROM java:8-jdk
 WORKDIR /app
-COPY . /app
-CMD ["./gradlew", "bootRun"]
+COPY ./webapp /app
+CMD ["./mvnw", "test", "spring-boot:run"]
 
