@@ -6,7 +6,7 @@ Both packages are included in the project structure.
 **To run with Maven**
 
 ```sh
-./mavenw spring-boot:run
+./mvnw spring-boot:run
 ```
 or
 
